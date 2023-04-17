@@ -1,0 +1,7 @@
+.git
+.gitignore
+.dockerignore
+
+dict.do
+node_modules
+
