@@ -1,4 +1,4 @@
-import {Body, Controller, Delete, Get, Inject, Param, Post, Put, UseGuards} from "@nestjs/common";
+import {Body, Controller, Inject} from "@nestjs/common";
 import {UpdateProfileDto} from "./dto/update-profile.dto";
 import {ProfileService} from "./profile.service"
 import {ClientProxy, EventPattern, MessagePattern} from "@nestjs/microservices";
@@ -12,26 +12,24 @@ export class ProfileController {
                 @Inject("PROF_SERVICE") private readonly client: ClientProxy) {}
 
     @MessagePattern({cmd:'updateProf'})
-    updateProfile(@Body() dto: UpdateProfileDto) {
+    updateProfile(@Body() dto: UpdateProfileDto) : Promise<UpdateProfileDto> {
         return this.profileService.updateProfile(dto);
     }
 
     @MessagePattern({cmd:'getProfile'})
-    async getProfileById(id: number): Promise<Profile>{
-        const Prof = await this.profileService.getProfileById(+id);
-        return Prof;
+    async getProfileById(id: number) : Promise<Profile> {
+        return  await this.profileService.getProfileById(+id);
     }
 
     @EventPattern('creatProfile')
-    async createProfile(data: any){
+    async createProfile(data: any) : Promise<Profile>{
         data = JSON.parse(data);
-        await this.profileService.createProfile(data)
+        return await this.profileService.createProfile(data)
     }
 
     @MessagePattern({cmd:'delProfile'})
-    async deleteProfile(id: string): Promise<number>{
-        const Prof = await this.profileService.deleteProfile(+id);
-        return Prof;
+    async deleteProfile(id: string) : Promise<number>{
+        return  await this.profileService.deleteProfile(+id);
     }
 
 }

@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ProfileModule } from './profile/profile.module';
 import {Profile} from "./profile/profile.model";
 import {ConfigModule} from "@nestjs/config";
@@ -23,22 +21,22 @@ import {ClientsModule, Transport} from "@nestjs/microservices";
         },
       },
     ]),
-    // ConfigModule.forRoot({
-    //   envFilePath: `.${process.env.NODE_ENV}.env`   /*получаем конфигурации
-    //      для разработки и для продакшена, нужно npm i cross-env*/
-    // }),
+    ConfigModule.forRoot({
+      envFilePath: `.${process.env.NODE_ENV}.env`   /*получаем конфигурации
+         для разработки и для продакшена, нужно npm i cross-env*/
+    }),
     SequelizeModule.forRoot({
       dialect: 'postgres',
-      host: "localhost",
-      port: 5432,
-      username: "postgres",
-      password: "postgres",
-      database: "Profiles",
+      host: process.env.POSTGRES_HOST,
+      port: Number(process.env.POSTGRES_PORT),
+      username: process.env.POSTGRES_USER,
+      password: process.env.POSTGRES_PASSWORD,
+      database: process.env.POSTGRES_DB,
       models: [Profile],
       autoLoadModels: true
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
